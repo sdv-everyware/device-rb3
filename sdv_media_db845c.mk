@@ -92,9 +92,24 @@ PRODUCT_COPY_FILES += \
 # Bluetooth: the HAL only; the Android stack is Java
 PRODUCT_PACKAGES += android.hardware.bluetooth-service.default
 
+# Wi-Fi: wpa_supplicant only (wificond is framework), started by net/net_bringup.sh
+FORCE_USE_ANDROIDMK_FOR_WPA_CONF := true
+PRODUCT_PACKAGES += \
+    wpa_supplicant \
+    wpa_supplicant.conf \
+    wpa_cli
+PRODUCT_COPY_FILES += \
+    device/linaro/dragonboard/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
+
 # the board's init without the framework (in place of Linaro's init.db845c.rc)
 PRODUCT_COPY_FILES += \
     device/rb3/sdv_media_db845c/init.sdv_db845c.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.sdv_db845c.rc
+
+# network without the framework: AOSP's dhcpclient (Trusty's, in a Soong namespace) and the script
+PRODUCT_SOONG_NAMESPACES += device/generic/trusty
+PRODUCT_PACKAGES += dhcpclient
+PRODUCT_COPY_FILES += \
+    device/rb3/sdv_media_db845c/net/net_bringup.sh:$(TARGET_COPY_OUT_VENDOR)/bin/net_bringup.sh
 
 # the root init (androidboot.init_rc in BoardConfig.mk): init reads this file and its imports only
 PRODUCT_COPY_FILES += \
@@ -126,3 +141,6 @@ PRODUCT_COPY_FILES += \
     device/rb3/sdv_media_db845c/init.sdv_media_db845c.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.sdv_media_db845c.rc
 
 include device/google/sdv/sdv_media_base/sdv_samples_media.mk
+
+# name resolution without netd
+$(call inherit-product, vendor/sdv-everyware/dnsproxyd/dnsproxyd.mk)

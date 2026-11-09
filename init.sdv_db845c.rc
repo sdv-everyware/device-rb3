@@ -19,6 +19,12 @@ on early-boot
     chmod 777 /sys/kernel/debug/sync/sw_sync
     chown graphics graphics /sys/kernel/debug/sync/info
 
+# Linaro creates these on zygote-start, which never comes here
+on post-fs-data
+    mkdir /data/vendor/wifi 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+
 on boot
     # SDV init has no class_start for these classes
     class_start hal
@@ -27,6 +33,17 @@ on boot
 # rmtfs exits when it starts before the modem's modules are loaded; without it no modem, no wlan0
 on property:init.svc.vendor.dlkm_loader=stopped
     start rmtfs
+
+# Wi-Fi with DHCP, once the background loader has the driver in (the on-board USB Ethernet
+# is left down: one interface, one default route)
+on property:init.svc.vendor.dlkm_loader=stopped
+    start vendor.net_bringup
+
+service vendor.net_bringup /vendor/bin/net_bringup.sh
+    user root
+    group system wifi inet net_admin net_raw
+    disabled
+    oneshot
 
 # adbd started before the USB gadget existed: restart it once the gadget is set up
 on property:sys.usb.configfs=1 && property:ro.boot.adb.enabled=1
