@@ -57,3 +57,21 @@ PRODUCT_COPY_FILES += \
 # the root init (androidboot.init_rc in BoardConfig.mk): init reads this file and its imports only
 PRODUCT_COPY_FILES += \
     device/rb3/sdv_media_db845c/init.sdv_media.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/hw/init.sdv_media.rc
+
+# SDV on one device: the sample policies, the test identity, service discovery on loopback
+include device/google/sdv/sdv_core_base/sepolicy/samples/device_sepolicy.mk
+
+# identity: instance1 of Google's example mesh, DICE from a test file. Test secrets, development only
+include device/google/sdv/sdv_base/init_open_dice/init_open_dice_from_file.mk
+PRODUCT_PACKAGES += vvmconfig.example
+# sdv_sd_agent panics without an ACL provider
+$(call soong_config_set,sdv_authz,acl_provider_type,sdv_acl_provider)
+# the trust store of instance1 from /product/etc: the board has no vvmtruststore partition
+PRODUCT_PACKAGES += \
+    vvmtruststore.preprovisioned.rc \
+    vvmtruststore_instance1_etc_uds_certs \
+    vvmtruststore_instance1_etc_uds_pubs
+
+# the network namespaces the SDV agents enter, with loopback only: no mesh on one device
+PRODUCT_COPY_FILES += \
+    device/rb3/sdv_media_db845c/ethernet/ethernet_sd_mesh_local.sh:$(TARGET_COPY_OUT_PRODUCT)/bin/ethernet/ethernet_sd_mesh_local.sh
