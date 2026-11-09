@@ -12,6 +12,10 @@ include device/google/sdv/sdv_core_base/sepolicy/samples/board_sepolicy.mk
 
 BOARD_VENDOR_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/vendor
 
+# the media profile: telemetry off
+BOARD_BOOTCONFIG += \
+    androidboot.sdv.telemetry.enabled=0
+
 # the root init: init reads this file and its imports only. Every bootconfig key once across
 # this file and vendor_boot, or the kernel drops the whole bootconfig. Permissive while the
 # denials of the board are collected.
@@ -51,9 +55,16 @@ RB3_FIRST_STAGE_STORAGE_MODULES := \
 RB3_FIRST_STAGE_DEPENDENCY_MODULES := \
     qcom_pdr_msg.ko snd-q6dsp-common.ko snd-soc-lpass-macro-common.ko \
     snd-soc-qcom-sdw.ko snd-soc-wcd-classh.ko
+# the display (GPU/DPU, the HDMI bridge, the combo PHY the display clocks depend on) in load
+# order: in the background loader /dev/dri/card0 came after harry had started and aborted
+RB3_FIRST_STAGE_DISPLAY_MODULES := \
+    aux-bridge.ko phy-qcom-qmp-combo.ko \
+    gpu-sched.ko drm_exec.ko drm_display_helper.ko drm_dp_aux_bus.ko \
+    msm.ko lontium-lt9611.ko
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES := \
     $(patsubst %,$(RB3_KERNEL_DIR)/%,$(VENDOR_RAMDISK_KERNEL_MODULES_LIST) \
-        $(RB3_FIRST_STAGE_STORAGE_MODULES) $(RB3_FIRST_STAGE_DEPENDENCY_MODULES))
+        $(RB3_FIRST_STAGE_STORAGE_MODULES) $(RB3_FIRST_STAGE_DEPENDENCY_MODULES) \
+        $(RB3_FIRST_STAGE_DISPLAY_MODULES))
 BOARD_SYSTEM_KERNEL_MODULES := \
     $(wildcard $(RB3_KERNEL_DIR)/btqca.ko) \
     $(wildcard $(RB3_KERNEL_DIR)/hci_uart.ko) \

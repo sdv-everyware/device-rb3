@@ -5,6 +5,7 @@ import /system/etc/init/init.sdv_core_base.rc
 # DICE from a test file (no hypervisor to provide /dev/open-dice0); after the core base, whose service it overrides
 import /system_ext/etc/init/init_open_dice_from_file_service.rc
 import /product/etc/init/vvmtruststore.preprovisioned.rc
+import /system/etc/init/init.sdv_media_db845c.rc
 
 import /vendor/etc/init/android.sdv.hardware.security.keymint-service.nonsecure.rc
 

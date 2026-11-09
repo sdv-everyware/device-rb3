@@ -39,6 +39,17 @@ $(call inherit-product, device/linaro/dragonboard/shared/graphics/mesa/device.mk
 $(call inherit-product, device/linaro/dragonboard/shared/graphics/minigbm_msm/device.mk)
 $(call inherit-product, device/linaro/dragonboard/db845c/device.mk)
 
+# minigbm would allocate UBWC buffers, which harry's scanout shows as noise
+PRODUCT_VENDOR_PROPERTIES += vendor.minigbm.debug=nocompression
+
+# Linaro's prebuilt mesa needs these in the vendor namespace; nothing else here pulls them in
+PRODUCT_PACKAGES += \
+    libui.vendor \
+    libhardware.vendor
+
+# harry's renderer, for an app run from /data/local/tmp during development
+PRODUCT_PACKAGES += libimpeller
+
 # Linaro's vendor scripts (set_udc.sh: adb over USB) need a vendor shell and toybox
 PRODUCT_PACKAGES += \
     sh_vendor \
@@ -75,3 +86,12 @@ PRODUCT_PACKAGES += \
 # the network namespaces the SDV agents enter, with loopback only: no mesh on one device
 PRODUCT_COPY_FILES += \
     device/rb3/sdv_media_db845c/ethernet/ethernet_sd_mesh_local.sh:$(TARGET_COPY_OUT_PRODUCT)/bin/ethernet/ethernet_sd_mesh_local.sh
+
+# the media profile; the app comes with its own APEX. Not the stock harry: its sample config
+# names Cuttlefish's displays, and its safety monitor spins without it
+PRODUCT_SYSTEM_PROPERTIES += ro.sdv.profile=media
+
+PRODUCT_COPY_FILES += \
+    device/rb3/sdv_media_db845c/init.sdv_media_db845c.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.sdv_media_db845c.rc
+
+include device/google/sdv/sdv_media_base/sdv_samples_media.mk
