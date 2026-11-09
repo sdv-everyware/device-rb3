@@ -24,6 +24,10 @@ on boot
     class_start hal
     start set_bdaddr
 
+# rmtfs exits when it starts before the modem's modules are loaded; without it no modem, no wlan0
+on property:init.svc.vendor.dlkm_loader=stopped
+    start rmtfs
+
 # adbd started before the USB gadget existed: restart it once the gadget is set up
 on property:sys.usb.configfs=1 && property:ro.boot.adb.enabled=1
     setprop sys.usb.config adb

@@ -11,8 +11,10 @@ import /vendor/etc/init/android.sdv.hardware.security.keymint-service.nonsecure.
 
 import /vendor/etc/init/init.sdv_db845c.rc
 import /vendor/etc/init/init.db845c.usb.rc
+import /vendor/etc/init/init.utils.rc
 import /vendor/etc/init/dlkm_loader.rc
 import /vendor/etc/init/allocator.rc
+import /vendor/etc/init/bluetooth-service-default.rc
 import /vendor/etc/init/bdaddr.rc
 import /vendor/etc/init/ethaddr.rc
 import /vendor/etc/init/power-default.rc

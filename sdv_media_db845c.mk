@@ -61,6 +61,37 @@ PRODUCT_PACKAGES += \
     fsck.f2fs \
     secdiscard
 
+# Qualcomm remote processors (modem with the Wi-Fi firmware, ADSP), from full.mk
+PRODUCT_PACKAGES += \
+    pd-mapper \
+    qrtr-ns \
+    qrtr-cfg \
+    qrtr-lookup \
+    rmtfs \
+    tqftpserv
+PRODUCT_COPY_FILES += \
+    device/linaro/dragonboard/shared/utils/init.utils.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.utils.rc
+
+# audio: the AIDL HAL apex and its policy files (full.mk); harry plays through tinyalsa
+PRODUCT_PACKAGES += \
+    com.android.hardware.audio \
+    libtinyalsav2 \
+    tinyplay \
+    tinycap \
+    tinymix \
+    tinypcminfo
+PRODUCT_COPY_FILES += \
+    device/linaro/dragonboard/etc/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    hardware/interfaces/audio/aidl/default/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects_config.xml \
+    frameworks/av/services/audiopolicy/config/bluetooth_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/bluetooth_audio_policy_configuration_7_0.xml \
+    frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
+    frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml
+
+# Bluetooth: the HAL only; the Android stack is Java
+PRODUCT_PACKAGES += android.hardware.bluetooth-service.default
+
 # the board's init without the framework (in place of Linaro's init.db845c.rc)
 PRODUCT_COPY_FILES += \
     device/rb3/sdv_media_db845c/init.sdv_db845c.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.sdv_db845c.rc
