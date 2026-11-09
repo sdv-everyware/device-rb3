@@ -144,3 +144,6 @@ include device/google/sdv/sdv_media_base/sdv_samples_media.mk
 
 # name resolution without netd
 $(call inherit-product, vendor/sdv-everyware/dnsproxyd/dnsproxyd.mk)
+
+# the clock over NTP: no RTC battery, the board boots in 1970 and TLS certificates are "not yet valid"
+$(call inherit-product, vendor/sdv-everyware/third_party/chrony/chrony.mk)

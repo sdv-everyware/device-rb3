@@ -45,6 +45,16 @@ service vendor.net_bringup /vendor/bin/net_bringup.sh
     disabled
     oneshot
 
+# chronyd restores the clock from its drift file; after the RTC (a module, no battery, 1970)
+# has registered, or the kernel would undo the restore
+on property:init.svc.vendor.dlkm_loader=stopped
+    wait /dev/rtc0 2
+    start chronyd
+
+# on the lease chronyd resolves its servers again at once instead of backing off for minutes
+on property:vendor.net.wlan0.dns1=*
+    exec_background - system system -- /product/bin/chrony_refresh.sh wlan0
+
 # adbd started before the USB gadget existed: restart it once the gadget is set up
 on property:sys.usb.configfs=1 && property:ro.boot.adb.enabled=1
     setprop sys.usb.config adb
