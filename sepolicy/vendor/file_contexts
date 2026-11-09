@@ -1,0 +1,2 @@
+# the SDV nonsecure KeyMint, as on the SDV core VM; without the label keystore2 and vold wait forever
+/vendor/bin/hw/android\.sdv\.hardware\.security\.keymint-service\.nonsecure  u:object_r:hal_keymint_rust_exec:s0

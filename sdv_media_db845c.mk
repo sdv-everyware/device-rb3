@@ -1,0 +1,59 @@
+# sdv_media_db845c: SDV Media (SDV core, apps on harry, no Java framework) on the Qualcomm
+# RB3 (DragonBoard 845c). SDV core base with its own root init (BoardConfig.mk) plus Linaro's
+# board files, but not db845c.mk / full.mk, which bring the whole framework.
+
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
+
+# as sdv_core_arm64.mk; the core base errors without them
+SDV_VM_LEVEL_PERMISSIONS_MODULE := com.oem.sdv.authz.allow_all.core
+SDV_SOMEIP_BROKER_CONFIG := broker_config.json
+PRODUCT_SYSTEM_PROPERTIES += ro.sdv.someip.broker_config=/system/etc/someip/broker_config.json
+# keystore2 needs a KeyMint; no TEE in AOSP for this board, so SDV's nonsecure one
+PRODUCT_PACKAGES += android.sdv.hardware.security.keymint-service.nonsecure
+SDV_VEHICLE_POWER_STATE_MANAGER_MODULE := vepsm
+SDV_DIAGNOSTICS_AGENT_MODULE := sdv_diagnostics_agent
+
+include device/google/sdv/sdv_core_base/sdv_core_base.mk
+
+# the core base sets ro.soc.* for a VM, db845c/device.mk sets the real chip: a property once only
+PRODUCT_VENDOR_PROPERTIES := $(filter-out ro.soc.manufacturer=% ro.soc.model=%,$(PRODUCT_VENDOR_PROPERTIES))
+# the board's system_dlkm writes its own build.prop; the Soong module doubles the path
+PRODUCT_PACKAGES := $(filter-out system_dlkm-build.prop,$(PRODUCT_PACKAGES))
+
+# the core base's ueventd.rc imports /vendor/etc/sdv_core_ueventd/: the board's device nodes go there
+PRODUCT_COPY_FILES += \
+    device/linaro/dragonboard/ueventd.common.rc:$(TARGET_COPY_OUT_VENDOR)/etc/sdv_core_ueventd/ueventd.db845c.rc
+
+PRODUCT_COPY_FILES += \
+    device/google/sdv/sdv_core_arm64/sdv_product_native_services_names:$(TARGET_COPY_OUT_PRODUCT)/etc/sdv_native_services_names
+
+PRODUCT_NAME := sdv_media_db845c
+PRODUCT_DEVICE := sdv_media_db845c
+PRODUCT_BRAND := Android
+PRODUCT_MODEL := SDV media on DragonBoard 845c
+PRODUCT_MANUFACTURER := Google
+
+# the board: Linaro's device.mk (kernel 6.12, dlkm_loader, fstab, firmware, HALs) and the GPU
+# stack; no drm_hwcomposer, harry drives KMS itself
+$(call inherit-product, device/linaro/dragonboard/shared/graphics/mesa/device.mk)
+$(call inherit-product, device/linaro/dragonboard/shared/graphics/minigbm_msm/device.mk)
+$(call inherit-product, device/linaro/dragonboard/db845c/device.mk)
+
+# Linaro's vendor scripts (set_udc.sh: adb over USB) need a vendor shell and toybox
+PRODUCT_PACKAGES += \
+    sh_vendor \
+    toybox_vendor \
+    awk_vendor
+
+# userdata is f2fs with metadata encryption; the core base brings the ext4 tools only
+PRODUCT_PACKAGES += \
+    fsck.f2fs \
+    secdiscard
+
+# the board's init without the framework (in place of Linaro's init.db845c.rc)
+PRODUCT_COPY_FILES += \
+    device/rb3/sdv_media_db845c/init.sdv_db845c.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.sdv_db845c.rc
+
+# the root init (androidboot.init_rc in BoardConfig.mk): init reads this file and its imports only
+PRODUCT_COPY_FILES += \
+    device/rb3/sdv_media_db845c/init.sdv_media.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/hw/init.sdv_media.rc
