@@ -72,9 +72,11 @@ else
     chown wifi:wifi $conf
     chmod 0660 $conf
     # the Wi-Fi bundle keeps the networks it joins (SAVE_CONFIG needs this)
-    if ! grep -q '^update_config=1' $conf; then
-        # one line, whatever the file had: a later update_config=0 would win over an inserted one
+    if [ "$(grep '^update_config=' $conf)" != update_config=1 ]; then
+        # exactly one such line: the last one wins, so a later update_config=0 has to go
         sed -i '/^update_config=/d' $conf
+        # a file that does not end with a newline would get the new line glued to its last one
+        [ -n "$(tail -c1 $conf)" ] && echo >> $conf
         echo 'update_config=1' >> $conf || log "cannot write update_config=1 to $conf"
     fi
     # -g: the global control interface for the Wi-Fi bundle; -O stays for wpa_cli and the watchdog
