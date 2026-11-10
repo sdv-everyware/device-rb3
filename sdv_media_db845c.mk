@@ -159,10 +159,9 @@ SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_e
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_ext/private
 
 # the panel: a vendor APEX with its harry app, started by its own init script (smarthome-app's
-# apex/). The app keeps HAR's domain vendor_harplatform, and the bundles bind TCP sockets (the
-# dashboard's gRPC): HAR's own policy, as harry_apex/product.mk wires it for the stock harry
+# apex/). The app keeps HAR's domain vendor_harplatform (BoardConfig.mk), and the bundles bind
+# TCP sockets (the dashboard's gRPC): HAR's own policy, as harry_apex/product.mk wires it
 PRODUCT_PACKAGES += com.everyware.smarthome
-BOARD_PRODUCT_SEPOLICY_DIRS += packages/services/display_safety/service/product/sepolicy
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/private
 

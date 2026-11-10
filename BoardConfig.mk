@@ -12,6 +12,10 @@ include device/google/sdv/sdv_core_base/sepolicy/samples/board_sepolicy.mk
 
 BOARD_VENDOR_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/vendor
 
+# HAR's domain vendor_harplatform for the panel's UI process (vendor file types: the vendor
+# policy, as device/google/sdv_display_safety/sdv_harry_common.mk wires it)
+BOARD_VENDOR_SEPOLICY_DIRS += packages/services/display_safety/service/product/sepolicy
+
 # the media profile: telemetry off
 BOARD_BOOTCONFIG += \
     androidboot.sdv.telemetry.enabled=0
