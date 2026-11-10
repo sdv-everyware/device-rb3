@@ -147,3 +147,13 @@ $(call inherit-product, vendor/sdv-everyware/dnsproxyd/dnsproxyd.mk)
 
 # the clock over NTP: no RTC battery, the board boots in 1970 and TLS certificates are "not yet valid"
 $(call inherit-product, vendor/sdv-everyware/third_party/chrony/chrony.mk)
+
+# the service bundles of the house (weather, news, Wi-Fi, Matter, the dashboard bridge), one
+# APEX each, and the contexts that put them into their SELinux domains
+$(call inherit-product, vendor/sdv-everyware/everyware/product/everyware.mk)
+
+# the domains of the two bundles that reach the network themselves (everyware/bundles/wifi and
+# /matter): the Wi-Fi bundle talks to the supplicant's control socket, the Matter bundle has
+# UDP and multicast; the supplicant's side of the socket is in sepolicy/vendor
+SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_ext/public
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_ext/private
