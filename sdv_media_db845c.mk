@@ -163,7 +163,7 @@ SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_
 # TCP sockets (the dashboard's gRPC): HAR's own policy, as harry_apex/product.mk wires it
 PRODUCT_PACKAGES += com.everyware.smarthome
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/public
-SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/private
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy
 
 # adb remount on a userdebug build: the tools of the overlay on /data (android-17.0.0_r1's
 # sdv_core_base does not ship them yet). Without them a bundle can only reach the board by

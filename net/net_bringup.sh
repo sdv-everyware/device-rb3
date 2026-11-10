@@ -72,7 +72,11 @@ else
     chown wifi:wifi $conf
     chmod 0660 $conf
     # the Wi-Fi bundle keeps the networks it joins (SAVE_CONFIG needs this)
-    grep -q '^update_config=1' $conf || sed -i '1i update_config=1' $conf
+    if ! grep -q '^update_config=1' $conf; then
+        # one line, whatever the file had: a later update_config=0 would win over an inserted one
+        sed -i '/^update_config=/d' $conf
+        echo 'update_config=1' >> $conf || log "cannot write update_config=1 to $conf"
+    fi
     # -g: the global control interface for the Wi-Fi bundle; -O stays for wpa_cli and the watchdog
     /vendor/bin/hw/wpa_supplicant -Dnl80211 -iwlan0 -c$conf -O$sockets -g@abstract:wpa_everyware &
     log "wpa_supplicant started"
