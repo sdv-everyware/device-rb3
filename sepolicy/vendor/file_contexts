@@ -3,3 +3,4 @@
 
 /vendor/bin/net_bringup\.sh      u:object_r:net_bringup_exec:s0
 /vendor/bin/dhcpclient           u:object_r:dhcpclient_exec:s0
+/vendor/bin/everyware-browser\.sh u:object_r:everyware_browser_exec:s0
