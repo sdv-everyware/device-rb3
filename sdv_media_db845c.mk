@@ -165,3 +165,11 @@ PRODUCT_PACKAGES += com.everyware.smarthome
 BOARD_PRODUCT_SEPOLICY_DIRS += packages/services/display_safety/service/product/sepolicy
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/private
+
+# adb remount on a userdebug build: the tools of the overlay on /data (android-17.0.0_r1's
+# sdv_core_base does not ship them yet). Without them a bundle can only reach the board by
+# flashing; with them deploy-bundle-rb3.sh writes /product and /vendor between flashes.
+PRODUCT_PACKAGES_DEBUG += \
+    remount \
+    overlay_remounter \
+    gsid
