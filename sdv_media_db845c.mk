@@ -147,3 +147,28 @@ $(call inherit-product, vendor/sdv-everyware/dnsproxyd/dnsproxyd.mk)
 
 # the clock over NTP: no RTC battery, the board boots in 1970 and TLS certificates are "not yet valid"
 $(call inherit-product, vendor/sdv-everyware/third_party/chrony/chrony.mk)
+
+# the service bundles of the house (weather, news, Wi-Fi, Matter, the dashboard bridge), one
+# APEX each, and the contexts that put them into their SELinux domains
+$(call inherit-product, vendor/sdv-everyware/everyware/product/everyware.mk)
+
+# the domains of the two bundles that reach the network themselves (everyware/bundles/wifi and
+# /matter): the Wi-Fi bundle talks to the supplicant's control socket, the Matter bundle has
+# UDP and multicast; the supplicant's side of the socket is in sepolicy/vendor
+SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_ext/public
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_ext/private
+
+# the panel: a vendor APEX with its harry app, started by its own init script (smarthome-app's
+# apex/). The app keeps HAR's domain vendor_harplatform (BoardConfig.mk), and the bundles bind
+# TCP sockets (the dashboard's gRPC): HAR's own policy, as harry_apex/product.mk wires it
+PRODUCT_PACKAGES += com.everyware.smarthome
+SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/public
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy
+
+# adb remount on a userdebug build: the tools of the overlay on /data (android-17.0.0_r1's
+# sdv_core_base does not ship them yet). Without them a bundle can only reach the board by
+# flashing; with them deploy-bundle-rb3.sh writes /product and /vendor between flashes.
+PRODUCT_PACKAGES_DEBUG += \
+    remount \
+    overlay_remounter \
+    gsid

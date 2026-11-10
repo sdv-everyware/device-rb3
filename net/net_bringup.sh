@@ -66,10 +66,21 @@ if ! wait_iface wlan0 20; then
 elif [ ! -f $conf ]; then
     log "no $conf, Wi-Fi stays off"
 else
+    # IPv6 on wlan0 for Matter (the SDV core switches it off for every interface)
+    echo 0 > /proc/sys/net/ipv6/conf/wlan0/disable_ipv6
     # the supplicant reads the config as wifi
     chown wifi:wifi $conf
     chmod 0660 $conf
-    /vendor/bin/hw/wpa_supplicant -Dnl80211 -iwlan0 -c$conf -O$sockets &
+    # the Wi-Fi bundle keeps the networks it joins (SAVE_CONFIG needs this)
+    if [ "$(grep '^update_config=' $conf)" != update_config=1 ]; then
+        # exactly one such line: the last one wins, so a later update_config=0 has to go
+        sed -i '/^update_config=/d' $conf
+        # a file that does not end with a newline would get the new line glued to its last one
+        [ -n "$(tail -c1 $conf)" ] && echo >> $conf
+        echo 'update_config=1' >> $conf || log "cannot write update_config=1 to $conf"
+    fi
+    # -g: the global control interface for the Wi-Fi bundle; -O stays for wpa_cli and the watchdog
+    /vendor/bin/hw/wpa_supplicant -Dnl80211 -iwlan0 -c$conf -O$sockets -g@abstract:wpa_everyware &
     log "wpa_supplicant started"
     wifi_watchdog &
 fi

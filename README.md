@@ -15,6 +15,8 @@ board, no hypervisor, no second machine.
 | Device identity and service discovery for one device | Google's test DICE files, `vvmconfig.example`, the trust store as files | `BoardConfig.mk`, `ethernet/ethernet_sd_mesh_local.sh` |
 | Network: Wi-Fi, DHCP, names | `wpa_supplicant`, AOSP's `dhcpclient`, `vendor/sdv-everyware/dnsproxyd` | `net/net_bringup.sh` |
 | Time | `vendor/sdv-everyware/third_party/chrony` | started after the RTC |
+| The house's services: weather, news, Wi-Fi, Matter, the dashboard bridge | `vendor/sdv-everyware/everyware/product/everyware.mk` | inherited: one APEX each in `/product`; the domains of the Wi-Fi and Matter bundles in `sepolicy/` |
+| The smart home panel | `packages/services/display_safety/utils/smarthome-app` | the vendor APEX `com.everyware.smarthome`, started by its own init script; it runs in HAR's domain (`BoardConfig.mk`) |
 
 The product lives under `device/rb3/` so that no `AndroidProducts.mk` of Google or Linaro
 is edited: the build picks up every `device/*/AndroidProducts.mk`.
@@ -54,8 +56,11 @@ device/rb3/sdv_media_db845c/tools/flash.sh images   # boot, vendor_boot, super; 
 device/rb3/sdv_media_db845c/tools/flash.sh all      # also the bootloader; wipes data
 ```
 
-There is no fastbootd on this board, so a change in system, vendor or product is flashed as
-the whole `super.img`. The board boots without AVB. Serial console: `ttyMSM0`, 115200.
+There is no fastbootd on this board, so a new image of system, vendor or product is flashed as
+the whole `super.img`. Between two flashes a userdebug image takes single files with
+`adb root; adb remount` (an overlay on `/data` that stays over a reboot); this is how
+`vendor/sdv-everyware/everyware/scripts/deploy-bundle-rb3.sh` puts a rebuilt bundle on the
+board. The board boots without AVB. Serial console: `ttyMSM0`, 115200.
 
 ## Network
 
@@ -68,7 +73,10 @@ dlkm_loader stopped
   └─ start vendor.net_bringup    net/net_bringup.sh
        ├─ modem remoteproc offline? start it
        ├─ wlan0: wait 20 s; with /data/vendor/wifi/wpa_supplicant.conf:
-       │    wpa_supplicant, and on every connect dhcpclient -i wlan0
+       │    IPv6 on for wlan0 (Matter), update_config=1 in the config (the Wi-Fi bundle
+       │    saves the networks it joins), wpa_supplicant with the control socket
+       │    @abstract:wpa_everyware for the Wi-Fi bundle, and on every connect
+       │    dhcpclient -i wlan0
        └─ wait                   the children live as long as the service
 dhcpclient: link up, address, default route, MTU;
             gateway and DNS servers as vendor.net.wlan0.gw, vendor.net.wlan0.dns1..4

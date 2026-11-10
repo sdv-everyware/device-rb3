@@ -6,6 +6,10 @@ import /system/etc/init/init.sdv_core_base.rc
 import /system_ext/etc/init/init_open_dice_from_file_service.rc
 import /product/etc/init/vvmtruststore.preprovisioned.rc
 import /system/etc/init/init.sdv_media_db845c.rc
+# adb remount on a userdebug build: remount waits for gsid, and the scratch files are cleaned
+# after a boot (android-17.0.0_r1's core base does not import them yet)
+import /system/etc/init/gsid.rc
+import /system/etc/init/clean_scratch_files.rc
 import /product/etc/init/dnsproxyd.rc
 import /product/etc/init/chronyd.rc
 
