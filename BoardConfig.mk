@@ -10,11 +10,12 @@ BOARD_SEPOLICY_DIRS += device/google/sdv/sdv_core_base/sepolicy/vendor/
 
 include device/google/sdv/sdv_core_base/sepolicy/samples/board_sepolicy.mk
 
-BOARD_VENDOR_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/vendor
-
 # HAR's domain vendor_harplatform for the panel's UI process (vendor file types: the vendor
-# policy, as device/google/sdv_display_safety/sdv_harry_common.mk wires it)
+# policy, as device/google/sdv_display_safety/sdv_harry_common.mk wires it). Before the
+# product's own folder: that one adds to vendor_harplatform (vendor_harplatform.te).
 BOARD_VENDOR_SEPOLICY_DIRS += packages/services/display_safety/service/product/sepolicy
+
+BOARD_VENDOR_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/vendor
 
 # the media profile: telemetry off
 BOARD_BOOTCONFIG += \
