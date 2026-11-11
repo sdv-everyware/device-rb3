@@ -15,7 +15,7 @@ SDV_DIAGNOSTICS_AGENT_MODULE := sdv_diagnostics_agent
 
 include device/google/sdv/sdv_core_base/sdv_core_base.mk
 
-# The house link between the panel (vendor) and the dashboard bundle (product): VINTF checks a
+# The screen link between the panel (vendor) and the dashboard bundle (product): VINTF checks a
 # vendor HAL against a framework matrix, and its client lives on /product.
 DEVICE_PRODUCT_COMPATIBILITY_MATRIX_FILE += device/rb3/sdv_media_db845c/vintf/product_compatibility_matrix.xml
 
