@@ -1,0 +1,2 @@
+# The house link the panel serves (vendor/sdv-everyware/everyware/interfaces/house)
+com.everyware.house.IHouseLink/default    u:object_r:everyware_house_service:s0

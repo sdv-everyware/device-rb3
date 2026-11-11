@@ -1,0 +1,11 @@
+# The house link: client and server call each other (the command sink goes back to the client).
+binder_call(everyware_house_client, everyware_house_server)
+binder_call(everyware_house_server, everyware_house_client)
+
+allow everyware_house_server everyware_house_service:service_manager { add find };
+allow everyware_house_client everyware_house_service:service_manager find;
+neverallow { domain -everyware_house_server } everyware_house_service:service_manager add;
+
+# The client: the bundles' shared domain until the dashboard bundle has a domain of its own
+# (sdv-everyware/everyware#54). The panel checks the caller's SDV identity in any case.
+typeattribute untrusted_service_bundle everyware_house_client;
