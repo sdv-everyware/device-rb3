@@ -1,0 +1,12 @@
+<!-- What the product partition expects of the vendor: the house link the dashboard bundle
+     calls (vendor/sdv-everyware/everyware/interfaces/house), served by the panel's APEX. -->
+<compatibility-matrix version="1.0" type="framework">
+    <hal format="aidl">
+        <name>com.everyware.house</name>
+        <version>1</version>
+        <interface>
+            <name>IHouseLink</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+</compatibility-matrix>

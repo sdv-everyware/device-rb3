@@ -15,6 +15,10 @@ SDV_DIAGNOSTICS_AGENT_MODULE := sdv_diagnostics_agent
 
 include device/google/sdv/sdv_core_base/sdv_core_base.mk
 
+# The house link between the panel (vendor) and the dashboard bundle (product): VINTF checks a
+# vendor HAL against a framework matrix, and its client lives on /product.
+DEVICE_PRODUCT_COMPATIBILITY_MATRIX_FILE += device/rb3/sdv_media_db845c/vintf/product_compatibility_matrix.xml
+
 # the core base sets ro.soc.* for a VM, db845c/device.mk sets the real chip: a property once only
 PRODUCT_VENDOR_PROPERTIES := $(filter-out ro.soc.manufacturer=% ro.soc.model=%,$(PRODUCT_VENDOR_PROPERTIES))
 # the board's system_dlkm writes its own build.prop; the Soong module doubles the path
