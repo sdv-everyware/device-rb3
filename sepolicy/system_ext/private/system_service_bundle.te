@@ -4,3 +4,5 @@
 typeattribute system_service_bundle coredomain;
 service_bundle_domain(system_service_bundle)
 set_prop(system_service_bundle, timezone_prop)
+# tokio sizes its worker pool from the CPU quota of the process's cgroup.
+allow system_service_bundle cgroup:file { getattr open read };
