@@ -6,3 +6,8 @@
 typeattribute matter_service_bundle coredomain;
 service_bundle_domain(matter_service_bundle)
 net_domain(matter_service_bundle)
+# tokio sizes its worker pool from the CPU quota of the process's cgroup.
+allow matter_service_bundle cgroup:file { getattr open read };
+# The Matter stack lists the IPv6 addresses of the interfaces for mDNS
+# (/proc/<pid>/net/if_inet6).
+allow matter_service_bundle proc_net:file { getattr open read };
