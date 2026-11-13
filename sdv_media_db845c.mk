@@ -162,7 +162,7 @@ $(call inherit-product, vendor/sdv-everyware/everyware/product/everyware.mk)
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_ext/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/rb3/sdv_media_db845c/sepolicy/system_ext/private
 
-# The house's settings: SDV's user_preferences keeps them and asks the service that owns one to
+# The device's settings: SDV's user_preferences keeps them and asks the service that owns one to
 # apply it (the System bundle owns the time zone). Google ships the service only as a sample
 # APEX; with it come three car samples (HVAC, seats, an HMI) that start only in a test group.
 PRODUCT_PACKAGES += com.android.sdv.sample.user_preferences
