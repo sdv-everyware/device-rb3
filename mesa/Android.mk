@@ -12,10 +12,12 @@
 # limitations under the License.
 #
 
-# Mesa, the GPU driver (freedreno), from the Linaro vendor package. The package's own
-# mesa_prebuilt/Android.mk defines these modules only for Linaro's devices (db845c, sm8x50),
-# and the build drops a missing module of PRODUCT_PACKAGES without an error: without this
-# file the image has no GPU driver. The module definitions are the package's, unchanged.
+# Mesa, the OpenGL ES and Vulkan driver (freedreno), from the Linaro vendor package. The
+# package's own mesa_prebuilt/Android.mk defines these modules only for Linaro's devices
+# (db845c, sm8x50), and the build drops a missing module of PRODUCT_PACKAGES without an error:
+# without this file the image has no OpenGL ES and Vulkan driver (build/tasks/mesa.mk checks).
+# The module definitions are the package's, unchanged. If the package's file names
+# sdv_media_db845c (an old hand edit), the modules are defined twice: extract the package again.
 
 ifeq ($(TARGET_DEVICE),sdv_media_db845c)
 ifeq ($(BOARD_USE_CUSTOMIZED_MESA),true)
@@ -23,7 +25,15 @@ ifeq ($(BOARD_USE_CUSTOMIZED_MESA),true)
 ifeq ($(EXPECTED_LINARO_VENDOR_VERSION),)
 $(error EXPECTED_LINARO_VENDOR_VERSION is not set (device/linaro/dragonboard/vendor-package-ver.mk))
 endif
+# the module list below (and in build/tasks/mesa.mk) is the one of package 20250929;
+# a new package may add or rename one
+ifneq ($(EXPECTED_LINARO_VENDOR_VERSION),20250929)
+$(error Linaro package $(EXPECTED_LINARO_VENDOR_VERSION): compare its mesa_prebuilt/Android.mk with mesa/Android.mk and build/tasks/mesa.mk, then update the version here)
+endif
 LOCAL_PATH := vendor/linaro/shared/$(EXPECTED_LINARO_VENDOR_VERSION)/mesa_prebuilt
+ifeq ($(wildcard $(LOCAL_PATH)/Android.mk),)
+$(error Linaro vendor package $(EXPECTED_LINARO_VENDOR_VERSION) is missing ($(LOCAL_PATH)): see README.md)
+endif
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libEGL_mesa

@@ -38,7 +38,9 @@ in the tree's root (it creates `vendor/linaro/`):
 device/linaro/dragonboard/vendor-package-ver.sh url
 ```
 
-Leave the package as it is: `mesa/Android.mk` defines its GPU driver (Mesa) for this product.
+Leave the package as it is: `mesa/Android.mk` defines its OpenGL ES and Vulkan driver (Mesa)
+for this product. If the package's `mesa_prebuilt/Android.mk` names `sdv_media_db845c`, extract
+the package again.
 
 ```
 source device/rb3/sdv_media_db845c/tools/env.sh
