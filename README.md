@@ -10,7 +10,7 @@ board, no hypervisor, no second machine.
 |---|---|---|
 | SDV core: init, apexd, servicemanager, keystore2, vold, the SDV services and agents | `device/google/sdv/sdv_core_base/sdv_core_base.mk` | included |
 | The board: kernel 6.12 and modules, firmware, fstab, boot HAL, power and thermal HALs | `device/linaro/dragonboard/db845c/device.mk`, `db845c/BoardConfig.mk` | inherited and included; not `db845c.mk` / `full.mk`, which bring the Java framework |
-| Graphics: mesa freedreno, minigbm | `device/linaro/dragonboard/shared/graphics` | inherited; no drm_hwcomposer, harry drives KMS itself |
+| Graphics: Mesa freedreno (prebuilt), minigbm | the Linaro vendor package (`mesa_prebuilt`), `device/linaro/dragonboard/shared/graphics` | inherited; the Mesa modules are defined in `mesa/Android.mk`, because the package defines them for Linaro's devices only; no drm_hwcomposer, harry drives KMS itself |
 | The display for apps on harry: linear buffers, the display driver in first stage, the vendor libraries mesa needs | this folder | the app itself comes with its APEX; the stock harry of display_safety is not in the image |
 | Device identity and service discovery for one device | Google's test DICE files, `vvmconfig.example`, the trust store as files | `BoardConfig.mk`, `ethernet/ethernet_sd_mesh_local.sh` |
 | Network: Wi-Fi, DHCP, names | `wpa_supplicant`, AOSP's `dhcpclient`, `vendor/sdv-everyware/dnsproxyd` | `net/net_bringup.sh` |
@@ -37,6 +37,8 @@ in the tree's root (it creates `vendor/linaro/`):
 ```
 device/linaro/dragonboard/vendor-package-ver.sh url
 ```
+
+Leave the package as it is: `mesa/Android.mk` defines its GPU driver (Mesa) for this product.
 
 ```
 source device/rb3/sdv_media_db845c/tools/env.sh
