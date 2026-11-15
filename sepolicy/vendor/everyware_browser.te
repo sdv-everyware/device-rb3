@@ -11,3 +11,10 @@ permissive everyware_browser;
 # it reads /proc/net/unix for a listening socket at the panel's path (a file left behind by a
 # stopped panel is not one). This shows the paths of every unix socket on the device, no data.
 allow everyware_browser proc_net:file r_file_perms;
+
+# The files of the Debian root (the APEX com.everyware.browser of everyware: rootfs.erofs,
+# mounted read-only by the APEX's rc with this context). Its own type, so that the rules of an
+# enforcing board can say what the domain above may read and run in the root and what nobody
+# else touches. No rules yet: the domain is permissive, and the mount is init's (a permissive
+# board).
+type everyware_browser_root_file, file_type, vendor_file_type;
