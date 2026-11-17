@@ -115,10 +115,6 @@ PRODUCT_PACKAGES += dhcpclient
 PRODUCT_COPY_FILES += \
     device/rb3/sdv_media_db845c/net/net_bringup.sh:$(TARGET_COPY_OUT_VENDOR)/bin/net_bringup.sh
 
-# the root init (androidboot.init_rc in BoardConfig.mk): init reads this file and its imports only
-PRODUCT_COPY_FILES += \
-    device/rb3/sdv_media_db845c/init.sdv_media.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/hw/init.sdv_media.rc
-
 # SDV on one device: the sample policies, the test identity, service discovery on loopback
 include device/google/sdv/sdv_core_base/sepolicy/samples/device_sepolicy.mk
 
@@ -155,6 +151,18 @@ $(call inherit-product, vendor/sdv-everyware/third_party/chrony/chrony.mk)
 # the service bundles of the house (weather, news, Wi-Fi, Matter, the dashboard bridge), one
 # APEX each, and the contexts that put them into their SELinux domains
 $(call inherit-product, vendor/sdv-everyware/everyware/product/everyware.mk)
+
+# the root init (androidboot.init_rc in BoardConfig.mk): init reads this file and its imports
+# only. With the panel's experimental browser (EVERYWARE_BROWSER=true, everyware.mk above) a
+# root init of two lines takes its path: it imports the board's init and the browser's service.
+ifeq ($(EVERYWARE_BROWSER),true)
+PRODUCT_COPY_FILES += \
+    device/rb3/sdv_media_db845c/init.sdv_media.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/hw/init.sdv_media.board.rc \
+    device/rb3/sdv_media_db845c/init.sdv_media.browser.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/hw/init.sdv_media.rc
+else
+PRODUCT_COPY_FILES += \
+    device/rb3/sdv_media_db845c/init.sdv_media.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/hw/init.sdv_media.rc
+endif
 
 # the domains of the two bundles that reach the network themselves (everyware/bundles/wifi and
 # /matter): the Wi-Fi bundle talks to the supplicant's control socket, the Matter bundle has
