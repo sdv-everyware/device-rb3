@@ -10,3 +10,6 @@ allow vendor_harplatform everyware_game:memfd_file { read write map getattr };
 allow vendor_harplatform everyware_camera_socket:sock_file write;
 allow vendor_harplatform everyware_camera:unix_stream_socket connectto;
 allow vendor_harplatform everyware_game_fifo:fifo_file { open write getattr };
+
+# the game's wl_shm pool (a memfd, labelled tmpfs on this kernel), mapped to draw its zone
+allow vendor_harplatform tmpfs:file { read write map };
