@@ -32,7 +32,7 @@ allow everyware_camera vendor_data_file:sock_file { write getattr };
 allow everyware_camera vendor_harplatform:unix_stream_socket connectto;
 allow everyware_camera vendor_harplatform:fd use;
 type_transition everyware_camera vendor_data_file:sock_file everyware_camera_socket "har-camera";
-allow everyware_camera everyware_camera_socket:sock_file { create unlink setattr getattr };
+allow everyware_camera everyware_camera_socket:sock_file { create unlink setattr getattr write };
 allow everyware_camera self:unix_stream_socket { create_stream_socket_perms listen accept };
 
 # the thread that decodes asks the scheduler for half a core's capacity (uclamp.min)
