@@ -29,7 +29,7 @@ allow everyware_game vendor_data_file:sock_file { write getattr };
 allow everyware_game vendor_harplatform:unix_stream_socket connectto;
 allow everyware_game vendor_harplatform:fd use;
 type_transition everyware_game vendor_data_file:fifo_file everyware_game_fifo "har-game-keys";
-allow everyware_game everyware_game_fifo:fifo_file { create open read getattr setattr unlink };
+allow everyware_game everyware_game_fifo:fifo_file { create open read write getattr setattr unlink };
 
 # the wl_shm pool is a memfd; this kernel labels it tmpfs, not memfd_file
 allow everyware_game tmpfs:file { read write map getattr };
