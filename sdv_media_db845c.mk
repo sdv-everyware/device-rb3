@@ -182,6 +182,12 @@ PRODUCT_PACKAGES += com.everyware.smarthome
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy
 
+# the panel's game (DOOM, packages/services/display_safety/utils/doom-app): experimental and off
+# unless EVERYWARE_GAME=true; then doom_app, Freedoom's WAD (fetched before the build) and the
+# property by which the panel shows its game button. A checkout without the doom-app repository
+# has no game, whatever the flag says.
+$(call inherit-product-if-exists, packages/services/display_safety/utils/doom-app/product/doom.mk)
+
 # adb remount on a userdebug build: the tools of the overlay on /data (android-17.0.0_r1's
 # sdv_core_base does not ship them yet). Without them a bundle can only reach the board by
 # flashing; with them deploy-bundle-rb3.sh writes /product and /vendor between flashes.
