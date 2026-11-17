@@ -37,3 +37,21 @@ allow everyware_camera self:unix_stream_socket { create_stream_socket_perms list
 
 # the thread that decodes asks the scheduler for half a core's capacity (uclamp.min)
 allow everyware_camera self:process setsched;
+
+# harry renders through mesa and minigbm as the panel does: the DRM directory and nodes, the
+# GPU's sysfs, gralloc's allocator (binder) and mapper, minigbm's debug property
+allow everyware_camera dri_device:dir r_dir_perms;
+allow everyware_camera graphics_device:chr_file rw_file_perms;
+r_dir_file(everyware_camera, sysfs_gpu)
+binder_use(everyware_camera)
+hal_client_domain(everyware_camera, hal_graphics_allocator)
+allow everyware_camera hal_graphics_mapper_service:service_manager find;
+get_prop(everyware_camera, vendor_minigbm_debug_prop)
+# uclamp.min above the default needs CAP_SYS_NICE
+allow everyware_camera self:capability sys_nice;
+# read at start by bionic and the tracing libraries, not needed by the camera
+dontaudit everyware_camera default_prop:file r_file_perms;
+dontaudit everyware_camera zygote_config_prop:file r_file_perms;
+dontaudit everyware_camera system_aconfig_storage_file:dir getattr;
+dontaudit everyware_camera system_file:file getattr;
+dontaudit everyware_camera system_perfetto_config_file:dir getattr;
