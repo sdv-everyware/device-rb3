@@ -182,10 +182,17 @@ PRODUCT_PACKAGES += com.everyware.smarthome
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += packages/services/display_safety/service/product/har_sdv_service_bundle_apex/lifecycle/sepolicy
 
+# the panel's camera (packages/services/display_safety/utils/camera-app): camera_app and its
+# service, started when the panel runs (init.sdv_media.rc imports /vendor/etc/init/everyware), in
+# its domain everyware_camera (sepolicy/vendor). A checkout without the camera-app repository has
+# no camera.
+$(call inherit-product-if-exists, packages/services/display_safety/utils/camera-app/product/camera.mk)
+
 # the panel's game (DOOM, packages/services/display_safety/utils/doom-app): experimental and off
-# unless EVERYWARE_GAME=true; then doom_app, Freedoom's WAD (fetched before the build) and the
-# property by which the panel shows its game button. A checkout without the doom-app repository
-# has no game, whatever the flag says.
+# unless EVERYWARE_GAME=true; then doom_app, Freedoom's WAD (fetched before the build), its
+# service (started when the panel runs, in its domain everyware_game) and the property by which
+# the panel shows its game button. A checkout without the doom-app repository has no game,
+# whatever the flag says.
 $(call inherit-product-if-exists, packages/services/display_safety/utils/doom-app/product/doom.mk)
 
 # adb remount on a userdebug build: the tools of the overlay on /data (android-17.0.0_r1's
