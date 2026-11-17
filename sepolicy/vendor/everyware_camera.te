@@ -1,0 +1,39 @@
+# camera-app (packages/services/display_safety/utils/camera-app): the USB webcam in the panel's
+# camera tile and full view. A harry zone client started by init after the panel
+# (/vendor/etc/init/everyware/everyware_camera.rc): the camera, the GPU's render node, the panel's
+# Wayland socket and its own control socket in the panel's runtime directory; no network.
+type everyware_camera, domain;
+type everyware_camera_exec, exec_type, vendor_file_type, file_type;
+# the control socket the panel connects to (har-camera in /data/vendor/everyware/run)
+type everyware_camera_socket, file_type, data_file_type;
+init_daemon_domain(everyware_camera)
+
+# the webcam: V4L2 on /dev/video* (the SoC's codec nodes have the same label; the app opens UVC
+# devices only), found in sysfs by its driver (/sys/class/video4linux/*/device/driver)
+allow everyware_camera video_device:chr_file rw_file_perms;
+allow everyware_camera sysfs:dir r_dir_perms;
+allow everyware_camera sysfs:lnk_file r_file_perms;
+allow everyware_camera sysfs:file r_file_perms;
+
+# its design (/vendor/etc/camera-app/camera.dcf)
+allow everyware_camera vendor_configs_file:dir r_dir_perms;
+allow everyware_camera vendor_configs_file:file r_file_perms;
+
+# harry draws the zones on the GPU's render node and shares the buffers with the panel
+allow everyware_camera gpu_device:dir r_dir_perms;
+allow everyware_camera gpu_device:chr_file rw_file_perms;
+get_prop(everyware_camera, graphics_config_prop)
+get_prop(everyware_camera, graphics_config_writable_prop)
+
+# the panel's runtime directory: its Wayland socket (made by the panel, the directory's label),
+# and the control socket made there
+allow everyware_camera vendor_data_file:dir rw_dir_perms;
+allow everyware_camera vendor_data_file:sock_file { write getattr };
+allow everyware_camera vendor_harplatform:unix_stream_socket connectto;
+allow everyware_camera vendor_harplatform:fd use;
+type_transition everyware_camera vendor_data_file:sock_file everyware_camera_socket "har-camera";
+allow everyware_camera everyware_camera_socket:sock_file { create unlink setattr getattr };
+allow everyware_camera self:unix_stream_socket { create_stream_socket_perms listen accept };
+
+# the thread that decodes asks the scheduler for half a core's capacity (uclamp.min)
+allow everyware_camera self:process setsched;

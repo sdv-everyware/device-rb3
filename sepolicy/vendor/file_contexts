@@ -4,3 +4,8 @@
 /vendor/bin/net_bringup\.sh      u:object_r:net_bringup_exec:s0
 /vendor/bin/dhcpclient           u:object_r:dhcpclient_exec:s0
 /vendor/bin/everyware-browser\.sh u:object_r:everyware_browser_exec:s0
+
+# the panel's other processes (everyware_camera.te, everyware_game.te)
+/vendor/bin/camera_app           u:object_r:everyware_camera_exec:s0
+/vendor/bin/doom_app             u:object_r:everyware_game_exec:s0
+/data/vendor/everyware/doom(/.*)? u:object_r:everyware_game_data_file:s0

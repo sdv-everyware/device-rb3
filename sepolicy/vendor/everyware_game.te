@@ -1,0 +1,32 @@
+# doom-app (packages/services/display_safety/utils/doom-app): the panel's game, in images with
+# EVERYWARE_GAME=true. A Wayland zone client started by init after the panel
+# (/vendor/etc/init/everyware/everyware_game.rc): the panel's Wayland socket, the keys' FIFO it
+# makes in the panel's runtime directory, Freedoom's WAD read-only from /vendor/etc/doom and its
+# settings and saves in /data/vendor/everyware/doom; no GPU, no network.
+type everyware_game, domain;
+type everyware_game_exec, exec_type, vendor_file_type, file_type;
+# its settings and saves
+type everyware_game_data_file, file_type, data_file_type;
+# the keys' FIFO the panel writes (har-game-keys in /data/vendor/everyware/run)
+type everyware_game_fifo, file_type, data_file_type;
+init_daemon_domain(everyware_game)
+
+# the WAD (/vendor/etc/doom/freedoom2.wad), and its check of the WAD's path from / down: every
+# directory's owner and mode
+allow everyware_game vendor_configs_file:dir r_dir_perms;
+allow everyware_game vendor_configs_file:file r_file_perms;
+allow everyware_game { rootfs vendor_file }:dir getattr;
+
+# its data directory, made with its label when it is missing
+allow everyware_game vendor_data_file:dir rw_dir_perms;
+type_transition everyware_game vendor_data_file:dir everyware_game_data_file "doom";
+allow everyware_game everyware_game_data_file:dir create_dir_perms;
+allow everyware_game everyware_game_data_file:file create_file_perms;
+
+# the panel's runtime directory: its Wayland socket (the picture in wl_shm buffers: memfds the
+# panel maps, everyware_game's memfd_file) and the keys' FIFO made there
+allow everyware_game vendor_data_file:sock_file { write getattr };
+allow everyware_game vendor_harplatform:unix_stream_socket connectto;
+allow everyware_game vendor_harplatform:fd use;
+type_transition everyware_game vendor_data_file:fifo_file everyware_game_fifo "har-game-keys";
+allow everyware_game everyware_game_fifo:fifo_file { create open read getattr setattr unlink };

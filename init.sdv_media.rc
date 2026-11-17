@@ -25,6 +25,10 @@ import /vendor/etc/init/bdaddr.rc
 import /vendor/etc/init/ethaddr.rc
 import /vendor/etc/init/power-default.rc
 import /vendor/etc/init/power.stats-default.rc
+# the panel's other processes, one service each, started when the panel runs: the camera
+# (camera-app's product/camera.mk) and, in images with EVERYWARE_GAME=true, the game (doom-app's
+# product/doom.mk). A directory: init reads every file in it.
+import /vendor/etc/init/everyware
 
 on boot
     start console

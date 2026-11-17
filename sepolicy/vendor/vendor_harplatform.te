@@ -1,3 +1,12 @@
 # The panel (HAR's UI process domain) serves the screen link to the dashboard bundle
 # (smarthome-app src/screen_binder.rs).
 typeattribute vendor_harplatform everyware_screen_server;
+
+# The panel's other processes (everyware_camera.te, everyware_game.te): the panel shows their
+# zones, the buffers and fences they hand over its Wayland socket; it tells the camera live or
+# still on the camera's socket and writes the game's keys into the game's FIFO.
+allow vendor_harplatform { everyware_camera everyware_game }:fd use;
+allow vendor_harplatform everyware_game:memfd_file { read write map getattr };
+allow vendor_harplatform everyware_camera_socket:sock_file write;
+allow vendor_harplatform everyware_camera:unix_stream_socket connectto;
+allow vendor_harplatform everyware_game_fifo:fifo_file { open write getattr };
