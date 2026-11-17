@@ -52,6 +52,4 @@ allow everyware_camera self:capability sys_nice;
 # read at start by bionic and the tracing libraries, not needed by the camera
 dontaudit everyware_camera default_prop:file r_file_perms;
 dontaudit everyware_camera zygote_config_prop:file r_file_perms;
-dontaudit everyware_camera system_aconfig_storage_file:dir getattr;
 dontaudit everyware_camera system_file:file getattr;
-dontaudit everyware_camera system_perfetto_config_file:dir getattr;
