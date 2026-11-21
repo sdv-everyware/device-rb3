@@ -31,11 +31,11 @@ secrets. Both are for development, not for a product.
 
 ## Build
 
-The firmware of the board is not in the tree. Get the Linaro vendor package and extract it
-in the tree's root (it creates `vendor/linaro/`):
+The firmware of the board is not in the tree. Fetch and extract the Linaro vendor package
+in the tree's root once (it creates `vendor/linaro/`):
 
 ```
-device/linaro/dragonboard/vendor-package-ver.sh url
+device/linaro/dragonboard/fetch-vendor-package.sh
 ```
 
 Leave the package as it is: `mesa/Android.mk` defines its OpenGL ES and Vulkan driver (Mesa)

@@ -11,7 +11,7 @@
 # out directory outside the tree).
 #
 # Needs the Linaro vendor package (firmware) in vendor/linaro:
-#     device/linaro/dragonboard/vendor-package-ver.sh url
+#     device/linaro/dragonboard/fetch-vendor-package.sh
 
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   echo "source me, do not execute: source ${0}"
@@ -37,8 +37,9 @@ fi
 VENDOR_VER="$("$TREE/device/linaro/dragonboard/vendor-package-ver.sh" ver)"
 if [ ! -d "$TREE/vendor/linaro/db845c/$VENDOR_VER" ]; then
   echo "vendor/linaro/db845c/$VENDOR_VER is missing (the Linaro firmware package)."
-  echo "Download: $("$TREE/device/linaro/dragonboard/vendor-package-ver.sh" url)"
-  echo "Extract it in $TREE (it creates vendor/linaro/...). Not sourcing."
+  echo "Run: device/linaro/dragonboard/fetch-vendor-package.sh"
+  echo "Or download manually: $("$TREE/device/linaro/dragonboard/vendor-package-ver.sh" url)"
+  echo "Not sourcing."
   return 1
 fi
 
