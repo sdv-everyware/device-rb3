@@ -1,4 +1,4 @@
-# The root init of an image with the panel's experimental browser (EVERYWARE_BROWSER=true,
+# The root init of an image with the panel's experimental browser (EVERYWARE_EXPERIMENTAL_BROWSER=true,
 # vendor/sdv-everyware/everyware/product/everyware.mk): the board's own root init, and the
 # browser's service (everyware's product/everyware_browser.rc). Installed at the root init's path
 # (androidboot.init_rc), the board's file next to it as init.sdv_media.board.rc.
